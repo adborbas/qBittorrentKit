@@ -39,7 +39,7 @@ public class qBittorrentWebAPI: qBittorrentService {
         },
                               to: "http://\(host):\(port)/api/v2/torrents/add",
                               method: .post,
-                              fileManager: SmartAFFileManager())
+                              fileManager: AllowingFileManager())
             .publishDecodable(type: String.self)
             .value()
             .map { value -> String in
@@ -52,8 +52,8 @@ public class qBittorrentWebAPI: qBittorrentService {
     }
 }
 
-class SmartAFFileManager: FileManager {
+fileprivate class AllowingFileManager: FileManager {
     override func fileExists(atPath path: String, isDirectory: UnsafeMutablePointer<ObjCBool>?) -> Bool {
-        return URL(fileURLWithPath: path).isFileURL
+        return self.fileExists(atPath: path) && !URL(fileURLWithPath: path).isFileURL
     }
 }

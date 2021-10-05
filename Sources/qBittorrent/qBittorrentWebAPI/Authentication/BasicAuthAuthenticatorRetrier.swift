@@ -9,20 +9,11 @@ import Foundation
 import Alamofire
 
 class BasicAuthAuthenticatorRetrier: RequestInterceptor {
-//    func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Result<URLRequest, Error>) -> Void) {func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Result<URLRequest, Error>) -> Void) {
-//        guard !session.sessionConfiguration.httpCookieStorage?.cookies?.contains(where: { cookie in
-//            cookie.name == "SID"
-//        }) else {
-//            /// If the request does not require authentication, we can directly return it as unmodified.
-//            return completion(.success(urlRequest))
-//        }
-//        var urlRequest = urlRequest
-//
-//        /// Set the Authorization header value using the access token.
-//        session.
-//
-//        completion(.success(urlRequest))
-//    }
+    private let credentials: BasicAuthCredentials
+    
+    init(credentials: BasicAuthCredentials) {
+        self.credentials = credentials
+    }
     
     func retry(_ request: Request, for session: Session, dueTo error: Error, completion: @escaping (RetryResult) -> Void) {
         guard let response = request.task?.response as? HTTPURLResponse, response.statusCode == 403 else {
@@ -39,17 +30,21 @@ class BasicAuthAuthenticatorRetrier: RequestInterceptor {
         }
     }
     
-    func refreshAuthCookie(for session: Session ,_ completionHandler: (Error?) -> Void) {
-        let sidCookie = HTTPCookie(properties: [
-            .domain: "raspberrypi.local",
-            .path: "/",
-            .name: "SID",
-            .value: "Y%2FAquW2l1sMtdMtT5QgTm5Z9nzzvYvHU"
-        ])!
-
-        session.sessionConfiguration.httpCookieStorage?.setCookie(sidCookie)
-        
-        completionHandler(nil)
+    func refreshAuthCookie(for session: Session ,_ completionHandler: @escaping  (Error?) -> Void) {
+        session.request("http://192.168.50.108:24560/api/v2/auth/login?username=\(credentials.username)&password=\(credentials.password)")
+            .response { response in
+                completionHandler(response.error)
+            }
+//        let sidCookie = HTTPCookie(properties: [
+//            .domain: "raspberrypi.local",
+//            .path: "/",
+//            .name: "SID",
+//            .value: "lFc6jT%2FAs%2B%2BNZF50ka%2FyGJPNSLHNh828"
+//        ])!
+//
+//        session.sessionConfiguration.httpCookieStorage?.setCookie(sidCookie)
+//
+//        completionHandler(nil)
     }
     
     //    func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Result<URLRequest, Error>) -> Void) {

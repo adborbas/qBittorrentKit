@@ -9,5 +9,5 @@ import Foundation
 
 public struct TorrentInfo: Codable {
     public let name: String
-    public let status: String
+    public let state: String
 }

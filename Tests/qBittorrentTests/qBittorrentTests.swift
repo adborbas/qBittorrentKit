@@ -1,11 +1,21 @@
 import XCTest
+import Combine
 @testable import qBittorrent
 
-final class qBittorrentTests: XCTestCase {
+final class qBittorrentWebAPITests: XCTestCase {
+    private var subscriptions: Set<AnyCancellable> = []
+    
     func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct
-        // results.
-        XCTAssertEqual(qBittorrent().text, "Hello, World!")
+        let service = qBittorrentWebAPI(username: "admin", password: "adminadmin")
+        let expectation = XCTestExpectation(description: "dsaadsda")
+        service.torrents().sink { completion in
+            print(completion)
+            expectation.fulfill()
+        } receiveValue: { infos in
+            print(infos)
+        }
+        .store(in: &subscriptions)
+        
+        wait(for: [expectation], timeout: 1000)
     }
 }

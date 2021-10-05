@@ -34,6 +34,6 @@ final class qBittorrentWebAPITests: XCTestCase {
     }
     
     func givenService() -> qBittorrentWebAPI {
-        return qBittorrentWebAPI(username: "admin", password: "adminadmin")
+        return qBittorrentWebAPI(username: "admin", password: "adminadmin", fileManager: FileManager.default)
     }
 }

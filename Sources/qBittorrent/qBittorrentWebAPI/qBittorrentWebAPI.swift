@@ -13,10 +13,12 @@ public class qBittorrentWebAPI: qBittorrentService {
     private let session: Session
     private let host: String = "192.168.50.108"
     private let port: Int = 24560
+    private let fileManager: FileManager
     
-    public init(username: String, password: String) {
+    public init(username: String, password: String, fileManager: FileManager) {
         let basicAuthCredentials = BasicAuthCredentials(username: username, password: password)
         self.session = Session(interceptor: BasicAuthAuthenticatorRetrier(credentials: basicAuthCredentials))
+        self.fileManager = fileManager
     }
     
     public func torrents() -> AnyPublisher<[TorrentInfo], Error> {
@@ -39,7 +41,7 @@ public class qBittorrentWebAPI: qBittorrentService {
         },
                               to: "http://\(host):\(port)/api/v2/torrents/add",
                               method: .post,
-                              fileManager: AllowingFileManager())
+                              fileManager: self.fileManager)
             .publishDecodable(type: String.self)
             .value()
             .map { value -> String in
@@ -52,8 +54,8 @@ public class qBittorrentWebAPI: qBittorrentService {
     }
 }
 
-fileprivate class AllowingFileManager: FileManager {
-    override func fileExists(atPath path: String, isDirectory: UnsafeMutablePointer<ObjCBool>?) -> Bool {
-        return self.fileExists(atPath: path) && !URL(fileURLWithPath: path).isFileURL
-    }
-}
+//fileprivate class AllowingFileManager: FileManager {
+//    override func fileExists(atPath path: String, isDirectory: UnsafeMutablePointer<ObjCBool>?) -> Bool {
+//        return self.fileExists(atPath: path) && !URL(fileURLWithPath: path).isFileURL
+//    }
+//}

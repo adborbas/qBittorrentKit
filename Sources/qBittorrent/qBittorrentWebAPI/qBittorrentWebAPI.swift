@@ -35,6 +35,7 @@ public class qBittorrentWebAPI: qBittorrentService {
                                      mimeType: "application/x-bittorrent")
             multipartFormData.append(category.data(using: .utf8)!, withName: "category")
             multipartFormData.append("true".data(using: .utf8)!, withName: "autoTMM")
+            multipartFormData.append("true".data(using: .utf8)!, withName: "paused")
         },
                               to: "http://\(host):\(port)/api/v2/torrents/add",
                               method: .post,

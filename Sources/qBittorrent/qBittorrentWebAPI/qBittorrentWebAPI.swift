@@ -11,6 +11,8 @@ import Alamofire
 
 public class qBittorrentWebAPI: qBittorrentService {
     private let session: Session
+    private let host: String = "192.168.50.108"
+    private let port: Int = 24560
     
     public init(username: String, password: String) {
         let basicAuthCredentials = BasicAuthCredentials(username: username, password: password)
@@ -18,9 +20,32 @@ public class qBittorrentWebAPI: qBittorrentService {
     }
     
     public func torrents() -> AnyPublisher<[TorrentInfo], Error> {
-        session.request("http://192.168.50.108:24560/api/v2/torrents/info", method: .get)
-            .publishDecodable(type: [TorrentInfo].self)
+        return session.request("http://\(host):\(port)/api/v2/torrents/info", method: .get)
+            .publishDecodable()
             .value()
+            .mapError { return $0 }
+            .eraseToAnyPublisher()
+    }
+    
+    public func addTorrent(file: URL, category: String) -> AnyPublisher<Void, Error> {
+        return session.upload(multipartFormData: { multipartFormData in
+            multipartFormData.append(file,
+                                     withName: "torrents",
+                                     fileName: file.lastPathComponent,
+                                     mimeType: "application/x-bittorrent")
+            multipartFormData.append(category.data(using: .utf8)!, withName: "category")
+            multipartFormData.append("true".data(using: .utf8)!, withName: "autoTMM")
+        },
+                              to: "http://\(host):\(port)/api/v2/torrents/add",
+                              method: .post,
+                              fileManager: FileManager.default)
+            .publishDecodable(type: String.self)
+            .value()
+            .map { value -> String in
+                print("addTorrent response: \(value)")
+                return value
+            }
+            .map { whatever in return Void() }
             .mapError { return $0 }
             .eraseToAnyPublisher()
     }

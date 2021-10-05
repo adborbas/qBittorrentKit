@@ -10,4 +10,6 @@ import Combine
 
 public protocol qBittorrentService {
     func torrents() -> AnyPublisher<[TorrentInfo], Error>
+    
+//    func addTorrent(url: URL, category: String) -> AnyPublisher<String, Error>
 }

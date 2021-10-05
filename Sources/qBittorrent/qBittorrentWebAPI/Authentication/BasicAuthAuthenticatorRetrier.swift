@@ -35,34 +35,5 @@ class BasicAuthAuthenticatorRetrier: RequestInterceptor {
             .response { response in
                 completionHandler(response.error)
             }
-//        let sidCookie = HTTPCookie(properties: [
-//            .domain: "raspberrypi.local",
-//            .path: "/",
-//            .name: "SID",
-//            .value: "lFc6jT%2FAs%2B%2BNZF50ka%2FyGJPNSLHNh828"
-//        ])!
-//
-//        session.sessionConfiguration.httpCookieStorage?.setCookie(sidCookie)
-//
-//        completionHandler(nil)
     }
-    
-    //    func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Result<URLRequest, Error>) -> Void) {
-    //        session.sessionConfiguration.httpCookieStorage?.cookies?.contains(where: { cookie in
-    //            return cookie.
-    //        })
-    
-    //        guard urlRequest.url?.absoluteString.hasPrefix("https://api.authenticated.com") == true else {
-    //                   /// If the request does not require authentication, we can directly return it as unmodified.
-    //                   return completion(.success(urlRequest))
-    //               }
-    //               var urlRequest = urlRequest
-    //
-    //               /// Set the Authorization header value using the access token.
-    //               urlRequest.setValue("Bearer " + storage.accessToken, forHTTPHeaderField: "Authorization")
-    //
-    //               completion(.success(urlRequest))
-    //    }
-    
-    
 }

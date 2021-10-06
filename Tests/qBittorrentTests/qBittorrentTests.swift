@@ -22,7 +22,8 @@ final class qBittorrentWebAPITests: XCTestCase {
     func testAddTorrent() throws {
         let service = givenService()
         let expectation = XCTestExpectation(description: "dsaadsda")
-        service.addTorrent(file: URL(fileURLWithPath: "/Users/adamborbas/Downloads/[nCore][hdser]Scenes.from.a.Marriage.S01E03.1080p.WEB.H264-GGWP.torrent"), category: "series").sink { completion in
+        service.addTorrent(torrentFile: URL(fileURLWithPath: "/Users/adamborbas/Downloads/[nCore][hdser]Scenes.from.a.Marriage.S01E03.1080p.WEB.H264-GGWP.torrent"),
+                           configuration: nil).sink { completion in
             print(completion)
             expectation.fulfill()
         } receiveValue: { result in

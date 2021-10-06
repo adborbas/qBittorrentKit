@@ -27,15 +27,15 @@ public class qBittorrentWebAPI: qBittorrentService {
             .eraseToAnyPublisher()
     }
     
-    public func addTorrent(file: URL, category: String) -> AnyPublisher<String, Error> {
+    public func addTorrent(torrentFile: URL, configuration: AddTorrentConfiguration?) -> AnyPublisher<String, Error> {
         return session.upload(multipartFormData: { multipartFormData in
-            multipartFormData.append(file,
+            multipartFormData.append(torrentFile,
                                      withName: "torrents",
-                                     fileName: file.lastPathComponent,
+                                     fileName: torrentFile.lastPathComponent,
                                      mimeType: "application/x-bittorrent")
-            multipartFormData.append(category.data(using: .utf8)!, withName: "category")
-            multipartFormData.append("true".data(using: .utf8)!, withName: "autoTMM")
-            multipartFormData.append("true".data(using: .utf8)!, withName: "paused")
+            
+            let configuration = configuration ?? AddTorrentConfiguration()
+            self.append(configuration, to: multipartFormData)
         },
                               to: "http://\(host):\(port)/api/v2/torrents/add",
                               method: .post,
@@ -44,6 +44,27 @@ public class qBittorrentWebAPI: qBittorrentService {
             .value()
             .mapError { return $0 }
             .eraseToAnyPublisher()
+    }
+    
+    func append(_ configuration: AddTorrentConfiguration, to multipartFormData: MultipartFormData) {
+        switch configuration.management {
+        case .auto(let category):
+            multipartFormData.append("true".data(using: .utf8)!, withName: "autoTMM")
+            multipartFormData.append(category.data(using: .utf8)!, withName: "category")
+        case .manual(let savePath):
+            multipartFormData.append("false".data(using: .utf8)!, withName: "autoTMM")
+            multipartFormData.append(savePath.data(using: .utf8)!, withName: "savepath")
+        }
+        
+        if configuration.paused {
+            multipartFormData.append("true".data(using: .utf8)!, withName: "paused")
+        }
+        if configuration.firstLastPiecePrio {
+            multipartFormData.append("true".data(using: .utf8)!, withName: "sequentialDownload")
+        }
+        if configuration.sequentialDownload {
+            multipartFormData.append("true".data(using: .utf8)!, withName: "firstLastPiecePrio")
+        }
     }
 }
 

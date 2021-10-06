@@ -93,9 +93,3 @@ fileprivate class ForbiddenDecodableResponseSerializer<T: Decodable>: ResponseSe
         return try wrappedSerializer.serialize(request: request, response: response, data: data, error: error)
     }
 }
-
-//fileprivate class AllowingFileManager: FileManager {
-//    override func fileExists(atPath path: String, isDirectory: UnsafeMutablePointer<ObjCBool>?) -> Bool {
-//        return self.fileExists(atPath: path) && !URL(fileURLWithPath: path).isFileURL
-//    }
-//}

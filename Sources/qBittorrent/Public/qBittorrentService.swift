@@ -20,8 +20,18 @@ public struct AddTorrentConfiguration {
         case manual(savePath: String)
     }
     
-    public let management: Management = .manual(savePath: "")
-    public let paused: Bool = false
-    public let sequentialDownload: Bool = false
-    public let firstLastPiecePrio: Bool = false
+    public let management: Management
+    public let paused: Bool
+    public let sequentialDownload: Bool
+    public let firstLastPiecePrio: Bool
+    
+    public init(management: Management = .manual(savePath: ""),
+                paused: Bool = false,
+                sequentialDownload: Bool = false,
+                firstLastPiecePrio: Bool = false) {
+        self.management = management
+        self.paused = paused
+        self.sequentialDownload = sequentialDownload
+        self.firstLastPiecePrio = firstLastPiecePrio
+    }
 }

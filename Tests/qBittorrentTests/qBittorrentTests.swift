@@ -34,6 +34,20 @@ final class qBittorrentWebAPITests: XCTestCase {
         wait(for: [expectation], timeout: 1000)
     }
     
+    func testCategories() throws {
+        let service = givenService()
+        let expectation = XCTestExpectation(description: "dsaadsda")
+        service.categories().sink { completion in
+            print(completion)
+            expectation.fulfill()
+        } receiveValue: { infos in
+            print(infos)
+        }
+        .store(in: &subscriptions)
+        
+        wait(for: [expectation], timeout: 1000)
+    }
+    
     func givenService() -> qBittorrentWebAPI {
         return qBittorrentWebAPI(username: "admin", password: "adminadmin")
     }

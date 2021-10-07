@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct TorrentInfo: Codable {
+public struct TorrentInfo: Codable, Equatable {
     public let name: String
     public let state: String
 }

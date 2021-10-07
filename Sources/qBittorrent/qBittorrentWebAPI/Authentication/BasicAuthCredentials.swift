@@ -8,11 +8,7 @@
 import Foundation
 import Alamofire
 
-struct BasicAuthCredentials: Equatable, AuthenticationCredential {
-    var requiresRefresh: Bool {
-        return false
-    }
-    
+struct BasicAuthCredentials: Equatable {
     let username: String
     let password: String
 }

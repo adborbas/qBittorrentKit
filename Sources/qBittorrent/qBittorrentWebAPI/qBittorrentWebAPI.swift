@@ -46,7 +46,15 @@ public class qBittorrentWebAPI: qBittorrentService {
             .eraseToAnyPublisher()
     }
     
-    func append(_ configuration: AddTorrentConfiguration, to multipartFormData: MultipartFormData) {
+    public func categories() -> AnyPublisher<[TorrentCategory], Error> {
+        return session.request("http://\(host):\(port)/api/v2/torrents/categories", method: .get)
+            .publishResponse(using: ForbiddenDecodableResponseSerializer())
+            .value()
+            .mapError { return $0 }
+            .eraseToAnyPublisher()
+    }
+    
+    private func append(_ configuration: AddTorrentConfiguration, to multipartFormData: MultipartFormData) {
         switch configuration.management {
         case .auto(let category):
             multipartFormData.append("true".data(using: .utf8)!, withName: "autoTMM")

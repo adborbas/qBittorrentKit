@@ -55,6 +55,14 @@ public class qBittorrentWebAPI: qBittorrentService {
             .eraseToAnyPublisher()
     }
     
+    public func appPreferences() -> AnyPublisher<AppPreferences, Error> {
+        return session.request("http://\(host):\(port)/api/v2/app/preferences", method: .get)
+            .publishResponse(using: ForbiddenDecodableResponseSerializer())
+            .value()
+            .mapError { $0 }
+            .eraseToAnyPublisher()
+    }
+    
     private func append(_ configuration: AddTorrentConfiguration, to multipartFormData: MultipartFormData) {
         switch configuration.management {
         case .auto(let category):

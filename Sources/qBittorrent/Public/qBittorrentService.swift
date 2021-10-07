@@ -14,4 +14,6 @@ public protocol qBittorrentService {
     func addTorrent(torrentFile: URL, configuration: AddTorrentConfiguration?) -> AnyPublisher<String, Error>
     
     func categories() -> AnyPublisher<[TorrentCategory], Error>
+     
+    func appPreferences() -> AnyPublisher<AppPreferences, Error>
 }

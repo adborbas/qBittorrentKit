@@ -40,8 +40,8 @@ final class qBittorrentWebAPITests: XCTestCase {
         service.categories().sink { completion in
             print(completion)
             expectation.fulfill()
-        } receiveValue: { infos in
-            print(infos)
+        } receiveValue: { categories in
+            print(categories)
         }
         .store(in: &subscriptions)
         

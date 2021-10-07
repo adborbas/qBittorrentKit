@@ -48,9 +48,10 @@ public class qBittorrentWebAPI: qBittorrentService {
     
     public func categories() -> AnyPublisher<[TorrentCategory], Error> {
         return session.request("http://\(host):\(port)/api/v2/torrents/categories", method: .get)
-            .publishResponse(using: ForbiddenDecodableResponseSerializer())
+            .publishResponse(using: ForbiddenDecodableResponseSerializer(of: TorrentCategoryResponse.self))
             .value()
-            .mapError { return $0 }
+            .map { $0.categories }
+            .mapError { $0 }
             .eraseToAnyPublisher()
     }
     

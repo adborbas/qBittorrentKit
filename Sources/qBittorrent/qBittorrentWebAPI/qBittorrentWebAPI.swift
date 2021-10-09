@@ -11,7 +11,7 @@ import Alamofire
 
 public class qBittorrentWebAPI: qBittorrentService {
     private let session: Session
-    private let host: String = "192.168.50.108"
+    private let host: String = "raspberrypi.local"
     private let port: Int = 24560
     
     public init(username: String, password: String) {
@@ -57,6 +57,14 @@ public class qBittorrentWebAPI: qBittorrentService {
     
     public func appPreferences() -> AnyPublisher<AppPreferences, Error> {
         return session.request("http://\(host):\(port)/api/v2/app/preferences", method: .get)
+            .publishResponse(using: ForbiddenDecodableResponseSerializer())
+            .value()
+            .mapError { $0 }
+            .eraseToAnyPublisher()
+    }
+    
+    public func torrentGeneralProperties(hash: String) -> AnyPublisher<TorrentGeneralProperties, Error> {
+        return session.request("http://\(host):\(port)/api/v2/torrents/properties?hash=\(hash)", method: .get)
             .publishResponse(using: ForbiddenDecodableResponseSerializer())
             .value()
             .mapError { $0 }

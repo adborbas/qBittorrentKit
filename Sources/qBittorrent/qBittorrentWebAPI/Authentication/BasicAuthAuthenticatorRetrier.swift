@@ -20,7 +20,12 @@ class BasicAuthAuthenticatorRetrier: RequestInterceptor {
             return completion(.doNotRetryWithError(error))
         }
         
-        refreshAuthCookie(for: session) { [weak self] error in
+        guard let url = request.request?.url,
+              let baseURL = sidCookieURL(from: url) else {
+            return completion(.doNotRetryWithError(error))
+        }
+        
+        refreshAuthCookie(url: baseURL, for: session) { [weak self] error in
             guard self != nil else { return }
             
             if let error = error {
@@ -30,10 +35,26 @@ class BasicAuthAuthenticatorRetrier: RequestInterceptor {
         }
     }
     
-    func refreshAuthCookie(for session: Session ,_ completionHandler: @escaping  (Error?) -> Void) {
-        session.request("http://192.168.50.108:24560/api/v2/auth/login?username=\(credentials.username)&password=\(credentials.password)")
+    func refreshAuthCookie(url: URL, for session: Session ,_ completionHandler: @escaping  (Error?) -> Void) {
+        session.request(url)
             .response { response in
                 completionHandler(response.error)
             }
     }
+    
+    private func sidCookieURL(from baseURL: URL) -> URL? {
+        var components = URLComponents()
+        components.scheme = baseURL.scheme
+        components.host = baseURL.host
+        components.port = baseURL.port
+        components.path = "/api/v2/auth/login"
+        components.queryItems = [
+            URLQueryItem(name: "username", value: credentials.username),
+            URLQueryItem(name: "password", value: credentials.password)
+        ]
+        
+        return components.url
+    }
+    
+//    "http://192.168.50.108:24560/api/v2/auth/login?username=\(credentials.username)&password=\(credentials.password)"
 }

@@ -19,8 +19,12 @@ public class qBittorrentWebAPI: qBittorrentService {
         self.session = Session(interceptor: BasicAuthAuthenticatorRetrier(credentials: basicAuthCredentials))
     }
     
-    public func torrents() -> AnyPublisher<[TorrentInfo], Error> {
-        return session.request("http://\(host):\(port)/api/v2/torrents/info", method: .get)
+    public func torrents(hash: String?) -> AnyPublisher<[TorrentInfo], Error> {
+        var hashString = ""
+        if let hash = hash {
+            hashString = "?hashes=\(hash)"
+        }
+        return session.request("http://\(host):\(port)/api/v2/torrents/info\(hashString)", method: .get)
             .publishResponse(using: ForbiddenDecodableResponseSerializer())
             .value()
             .mapError { return $0 }

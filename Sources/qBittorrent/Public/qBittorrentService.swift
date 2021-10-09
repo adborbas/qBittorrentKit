@@ -9,7 +9,7 @@ import Foundation
 import Combine
 
 public protocol qBittorrentService {
-    func torrents() -> AnyPublisher<[TorrentInfo], Error>
+    func torrents(hash: String?) -> AnyPublisher<[TorrentInfo], Error>
     
     func addTorrent(torrentFile: URL, configuration: AddTorrentConfiguration?) -> AnyPublisher<String, Error>
     

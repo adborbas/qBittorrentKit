@@ -9,6 +9,7 @@ import Foundation
 import Combine
 import Alamofire
 
+// TODO: handle error codes
 public class qBittorrentWebAPI: qBittorrentService {
     private let session: Session
     private let host: String = "raspberrypi.local"
@@ -72,6 +73,15 @@ public class qBittorrentWebAPI: qBittorrentService {
             .publishResponse(using: ForbiddenDecodableResponseSerializer())
             .value()
             .mapError { $0 }
+            .eraseToAnyPublisher()
+    }
+    
+    public func torrentContent(hash: String) -> AnyPublisher<[TorrentContent], Error> {
+        let hashString = "?hash=\(hash)"
+        return session.request("http://\(host):\(port)/api/v2/torrents/files\(hashString)", method: .get)
+            .publishResponse(using: ForbiddenDecodableResponseSerializer())
+            .value()
+            .mapError { return $0 }
             .eraseToAnyPublisher()
     }
     

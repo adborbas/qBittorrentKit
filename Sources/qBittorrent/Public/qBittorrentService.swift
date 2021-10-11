@@ -8,6 +8,7 @@
 import Foundation
 import Combine
 
+// TODO check version of service to be > 2.8.2 cause of content.index
 public protocol qBittorrentService {
     func torrents(hash: String?) -> AnyPublisher<[TorrentInfo], Error>
     
@@ -18,4 +19,6 @@ public protocol qBittorrentService {
     func appPreferences() -> AnyPublisher<AppPreferences, Error>
     
     func torrentGeneralProperties(hash: String) -> AnyPublisher<TorrentGeneralProperties, Error>
+    
+    func torrentContent(hash: String) -> AnyPublisher<[TorrentContent], Error>
 }

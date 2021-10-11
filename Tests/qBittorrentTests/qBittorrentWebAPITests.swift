@@ -4,10 +4,11 @@ import Combine
 
 final class qBittorrentWebAPITests: XCTestCase {
     private var subscriptions: Set<AnyCancellable> = []
+    private let hashString = "b0b654b4c7815a0fb0783df4a593e45133556bfb"
     
     func testTorrents() throws {
         let service = givenService()
-        let torrents = try awaitPublisher(service.torrents())
+        let torrents = try awaitPublisher(service.torrents(hash: nil))
         XCTAssertNotNil(torrents)
     }
     
@@ -34,8 +35,14 @@ final class qBittorrentWebAPITests: XCTestCase {
     
     func testTorrentGeneralProperties() throws {
         let service = givenService()
-        let properties = try awaitPublisher(service.torrentGeneralProperties(hash: "b0b654b4c7815a0fb0783df4a593e45133556bfb"))
+        let properties = try awaitPublisher(service.torrentGeneralProperties(hash: hashString))
         XCTAssertNotNil(properties)
+    }
+    
+    func testTorrentContent() throws {
+        let service = givenService()
+        let content = try awaitPublisher(service.torrentContent(hash: hashString))
+        XCTAssertNotNil(content)
     }
     
     private func givenService() -> qBittorrentWebAPI {

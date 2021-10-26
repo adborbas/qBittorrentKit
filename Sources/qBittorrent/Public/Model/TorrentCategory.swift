@@ -7,8 +7,12 @@
 
 import Foundation
 
+/// Torrent category
 public struct TorrentCategory: Codable, Hashable {
+    /// Name of the category.
     public let name: String
+    
+    /// File path set for the category.
     public let savePath: String
 }
 

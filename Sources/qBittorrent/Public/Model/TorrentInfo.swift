@@ -7,11 +7,8 @@
 
 import Foundation
 
-/**
- Torrents info response.
- 
- Response objects for the `/api/v2/torrents/info` endpoint.
-*/
+
+/// Torrent info.
 public struct TorrentInfo: Codable, Equatable {
     enum CodingKeys: String, CodingKey {
         case name = "name"

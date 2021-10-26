@@ -7,6 +7,7 @@
 
 import Foundation
 
+// Torrent content.
 public struct TorrentContent: Decodable {
     enum CodingKeys: String, CodingKey {
         case availability
@@ -19,10 +20,19 @@ public struct TorrentContent: Decodable {
         case size
     }
     
+    /// File priority.
     public enum Priority: Int, Decodable {
+        
+        /// Do not download.
         case doNotDownload = 0
+        
+        /// Normal priority.
         case normal = 1 // 4
+        
+        /// High priority.
         case high = 6
+        
+        /// Maximal priority
         case maximum = 7
         
         init?(from raw: Int) {
@@ -36,14 +46,28 @@ public struct TorrentContent: Decodable {
         }
     }
     
-    
+    /// File name (including relative path).
     public let name: String
+    
+    /// File index.
     public let index: Int
+    
+    /// File size (bytes).
     public let size: Int64
+    
+    /// True if file is seeding/complete.
     public let isSeed: Bool
+    
+    /// File progress (percentage/100).
     public let progress: Float
+    
+    /// File priority.
     public let priority: Priority
+    
+    /// Percentage of file pieces currently available (percentage/100).
     public let availability: Float
+    
+    /// The first number is the starting piece index and the second number is the ending piece index (inclusive).
     public let pieceRange: [Int]
     
     public init(from decoder: Decoder) throws {

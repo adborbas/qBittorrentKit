@@ -26,11 +26,9 @@ public struct TorrentGenericProperties: Decodable {
         case peers = "peers"
         case peersTotal = "peers_total"
         case comment = "comment"
-        case totalUploaded = "total_uploaded"
         case timeElapsed = "time_elapsed"
         case shareRatio = "share_ratio"
         case additionDate = "addition_date"
-        case comment = "comment"
         case seedingTime = "seeding_time"
     }
     
@@ -45,7 +43,7 @@ public struct TorrentGenericProperties: Decodable {
     public let totalDownloaded: Int64
     
     /// Total data uploaded for torrent (bytes).
-    public let totoalUploaded: Int64
+    public let totalUploaded: Int64
     
     /// Torrent download speed (bytes/second).
     public let downloadSpeed: Int64
@@ -83,9 +81,6 @@ public struct TorrentGenericProperties: Decodable {
     /// Torrent comment.
     public let comment: String
     
-    /// Total data uploaded for torrent (bytes).
-    public let totalUploaded: Int64
-    
     /// Torrent elapsed time (seconds).
     public let timeElapsed: Int
     
@@ -94,9 +89,6 @@ public struct TorrentGenericProperties: Decodable {
     
     /// When this torrent was added (unix timestamp).
     public let additionDate: Int64
-    
-    /// Torrent comment.
-    public let comment: String
     
     /// Torrent elapsed time while complete (seconds).
     public let seedingTime: Int

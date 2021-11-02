@@ -35,7 +35,7 @@ final class qBittorrentWebAPITests: XCTestCase {
     
     func testTorrentGenericProperties() throws {
         let service = givenService()
-        let properties = try awaitPublisher(service.TorrentGenericProperties(hash: hashString))
+        let properties = try awaitPublisher(service.torrentGenericProperties(hash: hashString))
         XCTAssertNotNil(properties)
     }
     

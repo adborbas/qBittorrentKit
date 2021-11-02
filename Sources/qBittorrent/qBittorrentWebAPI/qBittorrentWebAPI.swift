@@ -68,7 +68,7 @@ public class qBittorrentWebAPI: qBittorrentService {
             .eraseToAnyPublisher()
     }
     
-    public func TorrentGenericProperties(hash: String) -> AnyPublisher<TorrentGenericProperties, Error> {
+    public func torrentGenericProperties(hash: String) -> AnyPublisher<TorrentGenericProperties, Error> {
         return session.request("http://\(host):\(port)/api/v2/torrents/properties?hash=\(hash)", method: .get)
             .publishResponse(using: ForbiddenDecodableResponseSerializer())
             .value()

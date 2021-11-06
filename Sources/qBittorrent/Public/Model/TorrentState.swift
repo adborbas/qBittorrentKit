@@ -8,7 +8,7 @@
 import Foundation
 
 /// Torrent state.
-public enum TorrentState: String, Codable {
+public enum TorrentState: String, Codable, CaseIterable {
     
     /// Some error occurred, applies to paused torrents.
     case error

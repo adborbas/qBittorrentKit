@@ -9,27 +9,55 @@ import Foundation
 import Combine
 import Alamofire
 
+public enum qBittorrentWebAPIError: Error {
+    case invalidURL
+}
+
 // TODO: handle error codes
 public class qBittorrentWebAPI: qBittorrentService {
-    private let session: Session
-    private let host: String = "raspberrypi.local"
-    private let port: Int = 24560
+    public static let defaultPort = 24560
     
-    public init(username: String, password: String) {
-        let basicAuthCredentials = BasicAuthCredentials(username: username, password: password)
-        self.session = Session(interceptor: BasicAuthAuthenticatorRetrier(credentials: basicAuthCredentials))
+    private enum Constants {
+        static let apiBase = "/api/v2"
     }
     
-    public func torrents(hash: String?) -> AnyPublisher<[TorrentInfo], Error> {
-        var hashString = ""
-        if let hash = hash {
-            hashString = "?hashes=\(hash)"
+    public enum Authentication {
+        case bypassed
+        case basicAuth(BasicAuthCredentials)
+    }
+    
+    public enum Scheme: String {
+        case http = "http"
+        case https = "https"
+    }
+    
+    private let session: Session
+    private let endpointBuilder: EndpointBuilder
+    
+    let host = ""
+    let port = ""
+    
+    public init?(
+        scheme: Scheme,
+        host: String,
+        port: Int = qBittorrentWebAPI.defaultPort,
+        authentication: Authentication) {
+            
+            self.endpointBuilder = EndpointBuilder(scheme: scheme.rawValue,
+                                                   host: host,
+                                                   port: port,
+                                                   basePath: Constants.apiBase)
+            
+            switch authentication {
+            case .bypassed:
+                self.session = Session()
+            case .basicAuth(let basicAuthCredentials):
+                self.session = Session(interceptor: BasicAuthAuthenticatorRetrier(credentials: basicAuthCredentials))
+            }
         }
-        return session.request("http://\(host):\(port)/api/v2/torrents/info\(hashString)", method: .get)
-            .publishResponse(using: ForbiddenDecodableResponseSerializer())
-            .value()
-            .mapError { return $0 }
-            .eraseToAnyPublisher()
+    
+    public func torrents(hash: String?) -> AnyPublisher<[TorrentInfo], Error> {
+        return request(endpoint: Endpoint.torrents(hash: hash))
     }
     
     public func addTorrent(torrentFile: URL, configuration: AddTorrentConfiguration?) -> AnyPublisher<String, Error> {
@@ -104,5 +132,18 @@ public class qBittorrentWebAPI: qBittorrentService {
         if configuration.sequentialDownload {
             multipartFormData.append("true".data(using: .utf8)!, withName: "firstLastPiecePrio")
         }
+    }
+    
+    private func request<Output>(endpoint: Endpoint) -> AnyPublisher<Output, Error>  where Output: Decodable {
+        guard let url = endpointBuilder.url(for: endpoint) else {
+            return Fail<Output, Error>(error: qBittorrentWebAPIError.invalidURL)
+                .eraseToAnyPublisher()
+        }
+        
+        return session.request(url, method: .get)
+            .publishResponse(using: ForbiddenDecodableResponseSerializer())
+            .value()
+            .mapError { return $0 }
+            .eraseToAnyPublisher()
     }
 }

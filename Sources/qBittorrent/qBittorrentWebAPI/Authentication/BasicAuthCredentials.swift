@@ -8,7 +8,7 @@
 import Foundation
 import Alamofire
 
-struct BasicAuthCredentials: Equatable {
+public struct BasicAuthCredentials: Equatable {
     let username: String
     let password: String
 }

@@ -46,6 +46,8 @@ final class qBittorrentWebAPITests: XCTestCase {
     }
     
     private func givenService() -> qBittorrentWebAPI {
-        return qBittorrentWebAPI(username: "admin", password: "adminadmin")
+        return qBittorrentWebAPI(scheme: .http,
+                                 host: "raspberrypi.local",
+                                 authentication: .basicAuth(BasicAuthCredentials(username: "admin", password: "adminadmin")))!
     }
 }

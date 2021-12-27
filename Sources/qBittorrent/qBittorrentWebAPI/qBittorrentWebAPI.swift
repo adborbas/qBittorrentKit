@@ -37,7 +37,7 @@ public class qBittorrentWebAPI: qBittorrentService {
     let host = ""
     let port = ""
     
-    public init?(
+    public init(
         scheme: Scheme,
         host: String,
         port: Int = qBittorrentWebAPI.defaultPort,

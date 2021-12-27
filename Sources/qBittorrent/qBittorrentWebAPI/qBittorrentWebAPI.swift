@@ -61,16 +61,15 @@ public class qBittorrentWebAPI: qBittorrentService {
     }
     
     public func addTorrent(torrentFile: URL, configuration: AddTorrentConfiguration?) -> AnyPublisher<String, Error> {
-        return session.upload(multipartFormData: { multipartFormData in
-            multipartFormData.append(torrentFile,
-                                     withName: "torrents",
-                                     fileName: torrentFile.lastPathComponent,
-                                     mimeType: "application/x-bittorrent")
-            
-            let configuration = configuration ?? AddTorrentConfiguration()
-            self.append(configuration, to: multipartFormData)
-        },
-                              to: "http://\(host):\(port)/api/v2/torrents/add",
+        guard let url = endpointBuilder.url(for: Endpoint.add()) else {
+            return Fail<String, Error>(error: qBittorrentWebAPIError.invalidURL)
+                .eraseToAnyPublisher()
+        }
+        
+        return session.upload(multipartFormData: { Endpoint.addMultipartFormData(file: torrentFile,
+                                                                                 configuration: configuration,
+                                                                                 to: $0) },
+                              to: url,
                               method: .post,
                               fileManager: FileManager.default)
             .publishResponse(using: ForbiddenStringResponseSerializer())
@@ -80,7 +79,12 @@ public class qBittorrentWebAPI: qBittorrentService {
     }
     
     public func categories() -> AnyPublisher<[TorrentCategory], Error> {
-        return session.request("http://\(host):\(port)/api/v2/torrents/categories", method: .get)
+        guard let url = endpointBuilder.url(for: Endpoint.categories()) else {
+            return Fail<[TorrentCategory], Error>(error: qBittorrentWebAPIError.invalidURL)
+                .eraseToAnyPublisher()
+        }
+        
+        return session.request(url, method: .get)
             .publishResponse(using: ForbiddenDecodableResponseSerializer(of: TorrentCategoryResponse.self))
             .value()
             .map { $0.categories }
@@ -89,49 +93,15 @@ public class qBittorrentWebAPI: qBittorrentService {
     }
     
     public func appPreferences() -> AnyPublisher<AppPreferences, Error> {
-        return session.request("http://\(host):\(port)/api/v2/app/preferences", method: .get)
-            .publishResponse(using: ForbiddenDecodableResponseSerializer())
-            .value()
-            .mapError { $0 }
-            .eraseToAnyPublisher()
+        return request(endpoint: Endpoint.preferences())
     }
     
     public func torrentGenericProperties(hash: String) -> AnyPublisher<TorrentGenericProperties, Error> {
-        return session.request("http://\(host):\(port)/api/v2/torrents/properties?hash=\(hash)", method: .get)
-            .publishResponse(using: ForbiddenDecodableResponseSerializer())
-            .value()
-            .mapError { $0 }
-            .eraseToAnyPublisher()
+        return request(endpoint: Endpoint.properties(hash: hash))
     }
     
     public func torrentContent(hash: String) -> AnyPublisher<[TorrentContent], Error> {
-        let hashString = "?hash=\(hash)"
-        return session.request("http://\(host):\(port)/api/v2/torrents/files\(hashString)", method: .get)
-            .publishResponse(using: ForbiddenDecodableResponseSerializer())
-            .value()
-            .mapError { return $0 }
-            .eraseToAnyPublisher()
-    }
-    
-    private func append(_ configuration: AddTorrentConfiguration, to multipartFormData: MultipartFormData) {
-        switch configuration.management {
-        case .auto(let category):
-            multipartFormData.append("true".data(using: .utf8)!, withName: "autoTMM")
-            multipartFormData.append(category.data(using: .utf8)!, withName: "category")
-        case .manual(let savePath):
-            multipartFormData.append("false".data(using: .utf8)!, withName: "autoTMM")
-            multipartFormData.append(savePath.data(using: .utf8)!, withName: "savepath")
-        }
-        
-        if configuration.paused {
-            multipartFormData.append("true".data(using: .utf8)!, withName: "paused")
-        }
-        if configuration.firstLastPiecePrio {
-            multipartFormData.append("true".data(using: .utf8)!, withName: "sequentialDownload")
-        }
-        if configuration.sequentialDownload {
-            multipartFormData.append("true".data(using: .utf8)!, withName: "firstLastPiecePrio")
-        }
+        return request(endpoint: Endpoint.files(hash: hash))
     }
     
     private func request<Output>(endpoint: Endpoint) -> AnyPublisher<Output, Error>  where Output: Decodable {

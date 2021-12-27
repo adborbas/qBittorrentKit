@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  Add.swift
 //  
 //
 //  Created by Adam Borbas on 2021. 12. 27..
@@ -56,10 +56,6 @@ extension MultipartFormData {
 
 extension Bool {
     func asMultipartFormData() -> Data {
-        if self {
-            return "true".data(using: .utf8)!
-        }
-        
-        return "false".data(using: .utf8)!
+        string.data(using: .utf8)!
     }
 }

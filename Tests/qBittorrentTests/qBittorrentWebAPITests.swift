@@ -21,6 +21,13 @@ final class qBittorrentWebAPITests: XCTestCase {
         XCTAssertNotNil(added)
     }
     
+    func testDelete() throws {
+        return
+        let service = givenService()
+        let deleted = try awaitPublisher(service.deleteTorrent(hash: "b8f24dd22c1cf4221854de83972c938a3a517e0f", deleteFiles: true))
+        XCTAssertNotNil(deleted)
+    }
+    
     func testCategories() throws {
         let service = givenService()
         let categories = try awaitPublisher(service.categories())
@@ -42,6 +49,12 @@ final class qBittorrentWebAPITests: XCTestCase {
     func testTorrentContent() throws {
         let service = givenService()
         let content = try awaitPublisher(service.torrentContent(hash: hashString))
+        XCTAssertNotNil(content)
+    }
+    
+    func testSetPriority() throws {
+        let service = givenService()
+        let content = try awaitPublisher(service.setFilePriority(hash: "ffa2b50484bc21cf4ed0244ffbc40658bae12766", files: [0, 1], priority: .maximum))
         XCTAssertNotNil(content)
     }
     

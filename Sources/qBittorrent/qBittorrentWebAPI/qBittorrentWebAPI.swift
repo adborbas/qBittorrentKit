@@ -78,6 +78,19 @@ public class qBittorrentWebAPI: qBittorrentService {
             .eraseToAnyPublisher()
     }
     
+    public func deleteTorrent(hash: String, deleteFiles: Bool) -> AnyPublisher<String, Error> {
+        guard let url = endpointBuilder.url(for: Endpoint.delete(hash: hash, deleteFiles: deleteFiles)) else {
+            return Fail<String, Error>(error: qBittorrentWebAPIError.invalidURL)
+                .eraseToAnyPublisher()
+        }
+        
+        return session.request(url, method: .get)
+            .publishResponse(using: ForbiddenEmptyResponseSerializer())
+            .value()
+            .mapError { return $0 }
+            .eraseToAnyPublisher()
+    }
+    
     public func categories() -> AnyPublisher<[TorrentCategory], Error> {
         guard let url = endpointBuilder.url(for: Endpoint.categories()) else {
             return Fail<[TorrentCategory], Error>(error: qBittorrentWebAPIError.invalidURL)
@@ -102,6 +115,19 @@ public class qBittorrentWebAPI: qBittorrentService {
     
     public func torrentContent(hash: String) -> AnyPublisher<[TorrentContent], Error> {
         return request(endpoint: Endpoint.files(hash: hash))
+    }
+    
+    public func setFilePriority(hash: String, files: Set<Int>, priority: TorrentContent.Priority) ->  AnyPublisher<String, Error> {
+        guard let url = endpointBuilder.url(for: Endpoint.filePriority(hash: hash, files: files, priority: priority)) else {
+            return Fail<String, Error>(error: qBittorrentWebAPIError.invalidURL)
+                .eraseToAnyPublisher()
+        }
+        
+        return session.request(url, method: .get)
+            .publishResponse(using: ForbiddenEmptyResponseSerializer())
+            .value()
+            .mapError { return $0 }
+            .eraseToAnyPublisher()
     }
     
     private func request<Output>(endpoint: Endpoint) -> AnyPublisher<Output, Error>  where Output: Decodable {

@@ -14,6 +14,8 @@ public protocol qBittorrentService {
     
     func addTorrent(torrentFile: URL, configuration: AddTorrentConfiguration?) -> AnyPublisher<String, Error>
     
+    func deleteTorrent(hash: String, deleteFiles: Bool) -> AnyPublisher<String, Error>
+    
     func categories() -> AnyPublisher<[TorrentCategory], Error>
      
     func appPreferences() -> AnyPublisher<AppPreferences, Error>
@@ -21,4 +23,6 @@ public protocol qBittorrentService {
     func torrentGenericProperties(hash: String) -> AnyPublisher<TorrentGenericProperties, Error>
     
     func torrentContent(hash: String) -> AnyPublisher<[TorrentContent], Error>
+    
+    func setFilePriority(hash: String, files: Set<Int>, priority: TorrentContent.Priority) ->  AnyPublisher<String, Error>
 }

@@ -19,6 +19,6 @@ class ForbiddenEmptyResponseSerializer: ForbiddenDecodableResponseSerializer<Str
             throw AuthenticationError.excessiveRefresh
         }
         
-        return "OK"
+        return stringResponse
     }
 }

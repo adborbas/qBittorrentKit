@@ -58,6 +58,12 @@ final class qBittorrentWebAPITests: XCTestCase {
         XCTAssertNotNil(content)
     }
     
+    func testWebAPIVersion() throws {
+        let service = givenService()
+        let version = try awaitPublisher(service.webAPIVersion())
+        XCTAssertNotNil(version)
+    }
+    
     private func givenService() -> qBittorrentWebAPI {
         return qBittorrentWebAPI(scheme: .http,
                                  host: "raspberrypi.local",

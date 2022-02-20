@@ -8,29 +8,42 @@
 import Foundation
 import Alamofire
 
+enum AuthError: Error {
+    case forbidden
+}
+
 class BasicAuthAuthenticatorRetrier: RequestInterceptor {
     private let credentials: BasicAuthCredentials
+    private var retryCount = 0
     
     init(credentials: BasicAuthCredentials) {
         self.credentials = credentials
     }
     
     func retry(_ request: Request, for session: Session, dueTo error: Error, completion: @escaping (RetryResult) -> Void) {
+        guard retryCount == 0 else {
+            return completion(.doNotRetryWithError(AuthError.forbidden))
+        }
+        
         guard let response = request.task?.response as? HTTPURLResponse, response.statusCode == 403 else {
-            return completion(.doNotRetryWithError(error))
+            return completion(.doNotRetry)
         }
         
         guard let url = request.request?.url,
               let baseURL = sidCookieURL(from: url) else {
-            return completion(.doNotRetryWithError(error))
+            return completion(.doNotRetry)
         }
         
         refreshAuthCookie(url: baseURL, for: session) { [weak self] error in
-            guard self != nil else { return }
+            guard let strongSelf = self else {
+                completion(.doNotRetry)
+                return
+            }
             
             if let error = error {
                 completion(.doNotRetryWithError(error))
             }
+            strongSelf.retryCount += 1
             completion(.retry)
         }
     }
@@ -55,6 +68,4 @@ class BasicAuthAuthenticatorRetrier: RequestInterceptor {
         
         return components.url
     }
-    
-//    "http://192.168.50.108:24560/api/v2/auth/login?username=\(credentials.username)&password=\(credentials.password)"
 }

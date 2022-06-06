@@ -1,0 +1,17 @@
+version: "3.8"
+
+services:
+  qbittorrent:
+    image: linuxserver/qbittorrent
+    container_name: qbittorrent
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - UMASK_SET=022
+      - WEBUI_PORT=24560
+    volumes:
+      - ./config:/config
+    ports:
+      - 6881:6881
+      - 6881:6881/udp
+      - 24560:24560

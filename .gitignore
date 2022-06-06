@@ -1,0 +1,27 @@
+
+.DS_Store
+
+# qBittorrent Docker
+Resources/config/qBittorrent/rss/
+Resources/config/qBittorrent/GeoDB/
+Resources/config/qBittorrent/qBittorrent-data.conf
+Resources/config/qBittorrent/lockfile
+Resources/config/qBittorrent/BT_backup/
+Resources/config/qBittorrent/logs/
+
+## User settings
+xcuserdata/
+
+## App packaging
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Swift Package Manager
+Packages/
+Package.pins
+Package.resolved
+*.xcodeproj
+.swiftpm
+
+.build/

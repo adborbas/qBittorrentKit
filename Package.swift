@@ -19,8 +19,7 @@ let package = Package(
     targets: [
         .target(
             name: "qBittorrent",
-            dependencies: ["Alamofire"],
-            exclude: ["Resources"]),
+            dependencies: ["Alamofire"]),
         .testTarget(
             name: "UnitTests",
             dependencies: ["qBittorrent"]),

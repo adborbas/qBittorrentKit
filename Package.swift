@@ -20,7 +20,7 @@ let package = Package(
         .target(
             name: "qBittorrent",
             dependencies: ["Alamofire"],
-            exclude: ["../../Resources"]),
+            exclude: ["Resources"]),
         .testTarget(
             name: "UnitTests",
             dependencies: ["qBittorrent"]),

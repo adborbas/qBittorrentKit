@@ -13,9 +13,12 @@ jobs:
   test:
     runs-on: macos-latest
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
+      - name: Checkout repo
+        uses: actions/checkout@v3
 
+      - name: Docker setup
+        uses: docker-practice/actions-setup-docker@1
+        
       - name: Docker compose
         run: docker-compose -f ./Resources/docker-compose.yml up -d
         
@@ -23,6 +26,6 @@ jobs:
         run: swift build
 
       - name: Test
-        run: swift test -v
+        run: swift test -v --skip-build 
 
 

@@ -25,5 +25,5 @@ jobs:
         run: docker-compose -f ./Resources/docker-compose.yml up -d
 
       - name: Test
-        run: swift test -v --generate-linuxmain
+        run: swift test -v --enable-test-discovery
 

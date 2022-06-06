@@ -21,11 +21,8 @@ jobs:
         
       - name: Docker compose
         run: docker-compose -f ./Resources/docker-compose.yml up -d
-        
-      - name: Build
-        run: swift build
 
       - name: Test
-        run: swift test -v --skip-build 
+        run: swift test -v
 
 

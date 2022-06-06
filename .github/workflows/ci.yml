@@ -11,18 +11,18 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
 
       - name: Docker compose
         run: docker-compose -f ./Resources/docker-compose.yml up -d
-
-      - name: Run UnitTests
-        run: swift test --filter UnitTests
         
-      - name: Run IntegrationTests
-        run: swift test --filter IntegrationTests
+      - name: Build
+        run: swift build
+
+      - name: Test
+        run: swift test -v
 
 

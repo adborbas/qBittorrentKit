@@ -54,25 +54,11 @@ qBittorrent.sink { completion in
 
 ### Unit tests
 
-1. Just run the test target.
+`$ swift test --filter UnitTests` 
 
 ### Integration tests
 
-1. Have [qBittorrent](https://www.qbittorrent.org/download.php) installed somewhere.
-1. Add your qBittorent credentials to `Tests/qBittorentTests/SECRET_SERVICE.swift`. Exmaple:
-
-```swift
-import Foundation
-import qBittorrent
-
-extension qBittorrentWebAPITests {
-    func givenService() -> qBittorrentWebAPI {
-        return qBittorrentWebAPI(scheme: .http,
-                                 host: "<YOUR-qBittorent-ADDRESS>",
-                                 authentication: .basicAuth(BasicAuthCredentials(username: "<USERNAME>", password: "<PASSWORD>")))
-    }
-}
+```bash
+$ docker-compose -f ./Resources/docker-compose.yml up -d
+$ swift test --filter IntegrationTests
 ```
-
-3. Start tests in `qBittorrentWebAPITests`.
-4. ⚠️ Note that that some tests require a torrent added to qBittorrent. To make these tests reproducible a `test.torrent` torrent will be added and then removed from the client.

@@ -1,7 +1,7 @@
 # .github/workflows/documentation.yml
 name: Documentation
 
-on: [push]
+on: [release]
 
 jobs:
   build:

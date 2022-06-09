@@ -25,3 +25,4 @@ Package.resolved
 .swiftpm
 
 .build/
+Resources/config/qBittorrent/qBittorrent.conf

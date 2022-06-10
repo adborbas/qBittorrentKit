@@ -54,11 +54,19 @@ qBittorrent.sink { completion in
 
 ### Unit tests
 
-`$ swift test --filter UnitTests` 
+1. Start test by:
+   ```bash
+   swift test --filter UnitTests
+   ```
 
 ### Integration tests
 
-```bash
-$ docker-compose -f ./Resources/docker-compose.yml up -d
-$ swift test --filter IntegrationTests
-```
+1. [Install Docker](https://docs.docker.com/get-docker/)
+2. Start qBittorrent server in Docker by:
+   ```bash
+   docker-compose -f ./Resources/docker-compose.yml up -d
+   ```
+3. Run the tests
+   ```bash
+   swift test --filter IntegrationTests
+   ```

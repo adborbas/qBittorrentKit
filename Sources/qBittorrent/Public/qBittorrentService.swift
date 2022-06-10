@@ -3,6 +3,7 @@ import Combine
 
 public protocol qBittorrentService {
     
+    
     /**
      List of torrents managed by the client.
      

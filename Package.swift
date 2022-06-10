@@ -3,14 +3,14 @@
 import PackageDescription
 
 let package = Package(
-    name: "qBittorrent",
+    name: "qBittorrentKit",
     platforms: [
         .macOS(.v10_15),
         .iOS(.v13)
     ],
     products: [
         .library(
-            name: "qBittorrent",
+            name: "qBittorrentKit",
             targets: ["qBittorrent"]),
     ],
     dependencies: [

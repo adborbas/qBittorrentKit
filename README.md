@@ -8,14 +8,14 @@ qBittorrentKit is a light-weight [qBittorrent](https://www.qbittorrent.org) clie
 
 ```swift
 let qBittorrent = qBittorrentWebAPI(scheme: .http,
-            host: "myservice.local",
-            authentication: .bypassed)
+                                    host: "myservice.local",
+                                    authentication: .bypassed)
 ```
 
 2. Call any of the supported features
 
 ```swift
-qBittorrent.sink { completion in
+qBittorrent.torrents().sink { completion in
     print("torrents received")
 } receiveValue: { torrents in
     print(torrents)
@@ -55,6 +55,7 @@ qBittorrent.sink { completion in
 ### Unit tests
 
 1. Start test by:
+
    ```bash
    swift test --filter UnitTests
    ```
@@ -63,10 +64,13 @@ qBittorrent.sink { completion in
 
 1. [Install Docker](https://docs.docker.com/get-docker/)
 2. Start qBittorrent server in Docker by:
+
    ```bash
    docker-compose -f ./Resources/docker-compose.yml up -d
    ```
+
 3. Run the tests
+
    ```bash
    swift test --filter IntegrationTests
    ```

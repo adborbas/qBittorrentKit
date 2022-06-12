@@ -15,7 +15,7 @@ let qBittorrent = qBittorrentWebAPI(scheme: .http,
 2. Call any of the supported features
 
 ```swift
-qBittorrent.torrents().sink { completion in
+qBittorrent.torrents(hash: nil).sink { completion in
     print("torrents received")
 } receiveValue: { torrents in
     print(torrents)
